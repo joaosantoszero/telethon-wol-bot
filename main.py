@@ -10,7 +10,7 @@ app = Flask(__name__)
 api_id = int(os.environ.get("API_ID"))  # ou direto: api_id = 26207366
 api_hash = os.environ.get("API_HASH")
 session_string = os.environ.get("SESSION_STRING")
-chat_id = os.environ.get("CHAT_ID")  # pode ser string ou int
+chat_id = int(os.environ.get("CHAT_ID"))  # garante que será int
 
 # 🔌 Função reutilizável para enviar mensagem
 async def enviar_comando(comando):
