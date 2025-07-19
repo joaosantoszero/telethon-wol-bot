@@ -16,6 +16,7 @@ chat_id = os.environ.get("CHAT_ID")  # pode ser string ou int
 async def enviar_comando(comando):
     client = TelegramClient(StringSession(session_string), api_id, api_hash)
     await client.connect()
+    await client.get_dialogs()
     await client.send_message(chat_id, comando)
     await client.disconnect()
 
