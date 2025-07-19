@@ -1,34 +1,36 @@
 from flask import Flask
-from telethon.sync import TelegramClient
+from telethon import TelegramClient
 from telethon.sessions import StringSession
+import os
+import asyncio
 
 app = Flask(__name__)
 
-# 🔧 Coloque aqui suas credenciais
-api_id = 26207366
-api_hash = "a9401a6884f6a5d79f82da6df74593ba"
-session_string = "1AZWarzkBu4JrbaQUQ0z2s9DPt-yLcN2N5z64saO1aSZsrw5e16n18ehYzZ73DMX6KRoc2vnljMGja1Wyr4qRkmUbUzskwf_OcZSR7PG2ANfSdrgZL1PIOMiJ-IoZxJ8BlLXWtgr1OJ43ybkqB2Ly-g_JFz9Md84Ipe_fZDHTBNXYmr-5SJm5scIml3WeT2aYgFQLVcHa39LtDnqCIJ3voYvFuFulaJJrXFM46eRnvndY9tmBUByh0sOPG9gKqSUa-0iyFpNlPevulzQXrakzn7vG_kiqSfFajC03JsLu3MOdNOzWTtF1I9hUmkfMh8FObEcBVBSD0e3sflRdLcKvgxcKhXKR5T0="
-chat_id = "8166163944"  # ou ID numérico do bot
+# 🔐 Suas credenciais (use variáveis de ambiente se quiser)
+api_id = int(os.environ.get("API_ID"))  # ou direto: api_id = 26207366
+api_hash = os.environ.get("API_HASH")
+session_string = os.environ.get("SESSION_STRING")
+chat_id = os.environ.get("CHAT_ID")  # pode ser string ou int
+
+# 🔌 Função reutilizável para enviar mensagem
+async def enviar_comando(comando):
+    async with TelegramClient(StringSession(session_string), api_id, api_hash) as client:
+        await client.send_message(chat_id, comando)
 
 @app.route('/ligar')
 def ligar():
-    with TelegramClient(StringSession(session_string), api_id, api_hash) as client:
-        client.send_message(chat_id, '/ligar')
+    asyncio.run(enviar_comando('/ligar'))
     return 'Comando /ligar enviado'
 
 @app.route('/desligar')
 def desligar():
-    with TelegramClient(StringSession(session_string), api_id, api_hash) as client:
-        client.send_message(chat_id, '/desligar')
+    asyncio.run(enviar_comando('/desligar'))
     return 'Comando /desligar enviado'
 
 @app.route('/')
 def home():
     return 'Online. Use /ligar ou /desligar'
 
-import os
-
 if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 5000))  # usa a variável de ambiente PORT fornecida pela Render
-    app.run(host="0.0.0.0", port=port)
-
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=True)  # ative o debug para ver futuros erros
