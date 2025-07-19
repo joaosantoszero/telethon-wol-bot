@@ -26,5 +26,9 @@ def desligar():
 def home():
     return 'Online. Use /ligar ou /desligar'
 
+import os
+
 if __name__ == '__main__':
-    app.run()
+    port = int(os.environ.get("PORT", 5000))  # usa a variável de ambiente PORT fornecida pela Render
+    app.run(host="0.0.0.0", port=port)
+
