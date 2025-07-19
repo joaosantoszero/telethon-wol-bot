@@ -14,8 +14,10 @@ chat_id = os.environ.get("CHAT_ID")  # pode ser string ou int
 
 # 🔌 Função reutilizável para enviar mensagem
 async def enviar_comando(comando):
-    async with TelegramClient(StringSession(session_string), api_id, api_hash) as client:
-        await client.send_message(chat_id, comando)
+    client = TelegramClient(StringSession(session_string), api_id, api_hash)
+    await client.connect()
+    await client.send_message(chat_id, comando)
+    await client.disconnect()
 
 @app.route('/ligar')
 def ligar():
